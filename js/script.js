@@ -152,6 +152,17 @@ function localfree(e){
 	localStorage.removeItem("tasksave");
 	localStorage.setItem('tasksave','[]')
 	document.querySelector('.main').innerHTML = "";
+
+	no_text.innerText = "Everything is successfully DELETED";
+	setTimeout(function (){
+		no_task_m.classList.add('done__no_task_m');
+	},10)
+	setTimeout(function (){
+		no_task_m.classList.remove('done__no_task_m');
+	},1900)
+	setTimeout(function (){
+		no_text.innerText = "No tasks";
+	},2100)	
 }
 
 
@@ -213,10 +224,10 @@ document.querySelector(".form_add_gr").addEventListener("submit",function(el){
 			},10)
 			setTimeout(function (){
 			no_task_m.classList.remove('done__no_task_m');
-			},1500)
+			},1900)
 			setTimeout(function (){
 				no_text.innerText = "No tasks";
-			},1700)		
+			},2100)		
 		}
 		else{
 			options.push(field);
@@ -369,7 +380,7 @@ function acordion(el){
 			elii.classList.remove('done_arrow');
 			setTimeout(function (){
 				no_task_m.classList.remove('done__no_task_m');
-			},1500)
+			},1900)
 		}
 		else{
 			if(elkds.style.maxHeight) {
@@ -461,29 +472,40 @@ function delete_task(e) {
 
 // remove one element from local storage and site
 function deleter(e){
-	thisel = e;
-	var dadt  = thisel.parentElement;
+	var dadt  = e.parentElement;
 	var absoluteplus = dadt.nextElementSibling;
-	absoluteplus.remove();
-	var divgroup = e.parentElement;
-	divgroup.remove();
-	localStorage.removeItem("groupssave");
-	localStorage.setItem('groupssave','[]');
-	var everyone = document.querySelectorAll('#option');
-	var arryt = JSON.parse(localStorage.getItem("groupssave"));
-	var unistall = everyone.forEach(function(item){
-		var text_delete_item = item.getAttribute("text");
-		var time_delete_item = item.getAttribute("timecr");
-		var important_delete_item = item.getAttribute("important");
-		var obj = {
-			timeCreate: time_delete_item,
-			text: text_delete_item,
-			important: important_delete_item
-		};
-		arryt.push(obj);
-	})
-	localStorage.setItem("groupssave", JSON.stringify(arryt))
-	document.querySelector(".input_for_task__in").value = "";
+	if (dadt.getAttribute("important") == 'false') {
+		absoluteplus.remove();
+		dadt.remove();
+		localStorage.removeItem("groupssave");
+		localStorage.setItem('groupssave','[]');
+		var everyone = document.querySelectorAll('#option');
+		var arryt = JSON.parse(localStorage.getItem("groupssave"));
+		var unistall = everyone.forEach(function(item){
+			var text_delete_item = item.getAttribute("text");
+			var time_delete_item = item.getAttribute("timecr");
+			var important_delete_item = item.getAttribute("important");
+			var obj = {
+				timeCreate: time_delete_item,
+				text: text_delete_item,
+				important: important_delete_item
+			};
+			arryt.push(obj);
+		})
+		localStorage.setItem("groupssave", JSON.stringify(arryt))
+		document.querySelector(".input_for_task__in").value = "";
+	} else {
+		no_text.innerText = "You Can't Delete Important Group";
+		setTimeout(function (){
+			no_task_m.classList.add('done__no_task_m');
+		},10)
+		setTimeout(function (){
+			no_task_m.classList.remove('done__no_task_m');
+		},1900)
+		setTimeout(function (){
+			no_text.innerText = "No tasks";
+		},2100)	
+	}
 }
 
 
@@ -525,7 +547,16 @@ function openc_select(e){
 		}
 	}
 	else{
-		console.log('no groups finded')
+		no_text.innerText = "No Groups Finded";
+		setTimeout(function (){
+			no_task_m.classList.add('done__no_task_m');
+		},10)
+		setTimeout(function (){
+			no_task_m.classList.remove('done__no_task_m');
+		},1900)
+		setTimeout(function (){
+			no_text.innerText = "No tasks";
+		},2100)	
 	}
 }
 
@@ -560,10 +591,10 @@ document.querySelector(".form__add_task_menu").addEventListener("submit",functio
 		},10)
 		setTimeout(function (){
 			no_task_m.classList.remove('done__no_task_m');
-		},1500)
+		},1900)
 		setTimeout(function (){
 			no_text.innerText = "No tasks";
-		},1700)
+		},2100)
 	}
 	else{
 		var timing = new Date();
@@ -873,10 +904,10 @@ document.querySelector(".form_modal").addEventListener("submit",function(eli){
 		},10)
 		setTimeout(function (){
 			no_task_m.classList.remove('done__no_task_m');
-		},1500)
+		},1900)
 		setTimeout(function (){
 			no_text.innerText = "No tasks";
-		},1700)
+		},2100)
 	}
 	else{
 		var dad = document.querySelector(".modal_original");
