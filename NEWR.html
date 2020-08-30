@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>To do List</title>
+	<link rel="stylesheet" type="text/css" href="css/sob.css">
+	 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	 <link href="https://fonts.googleapis.com/css?family=Gugi|Orbitron|Changa|Poppins|Roboto|Raleway|Ranga" rel="stylesheet">
+</head>
+<body onload="startTime(), download(), tasks_on()">
+
+
+
+<header class="header" >
+	<section class="header__s1">
+		<div class="div__todo"><p class="p__to_do_list">To Do List  </p><p class="p__text_to_do">  , your own site</p></div>
+
+		<div class="weather">
+			<div class="con_img">
+				<img class="img_weather" src="http://openweathermap.org/img/w/01d.png">
+			</div>
+			<p class="temperature"></p>
+		</div>
+
+		<div class="time__s1" >
+			<p class="time_date_s1"></p>
+			<p class="day_date_s1"></p>
+		</div>
+
+	</section>
+	<section class="header__s2">
+		<div class="buttons__s2">
+			<div class="button_adder">
+				<button class="button_pick_add" onclick='add_task(this)'>
+				</button>
+			</div>
+			<div class="p_con_s2"><p class="p__p_con_s2">Lviv</p></div>
+			<div class="group_adder">
+				<form class="form_add_gr">
+					<input autocomplete="off" placeholder="New group" id="button_group" type="text" name="add_group" class="input_add_gr">
+				</form>
+				<div class="button_opener" onclick='add_group(this)'></div>
+			</div>
+		</div>
+	</section>
+</header> 
+<main class="main">
+</main>
+
+
+<div class="option_no">
+	<p class="no_text">No Tasks</p>
+</div>
+
+<section class="add_task_menu">
+	<div class="rch_info">
+		<p class="made__rch_info">To Do Task</p>
+	</div>
+	<div class="rch_deleter_add_task_menu">
+		<button class="button_pick_add__task" onclick='delete_task(this)'></button>
+		<div class="star_cool" onclick='delete_task(this)'></div>
+	</div>
+	<div class="main__add_task_menu">
+		<div class="image__add_task_menu">
+			<p class="p__add_task_menu">RCH</p>
+		</div>
+		<form class="form__add_task_menu">
+			<div class="input_div"  onclick="openc_select(this)">
+				<input autocomplete="off" placeholder="Choose group" id="button_task_plus" type="text" name="add_task__in" class="input_for_task__in" disabled="true">
+				<div class="arrow_down_t"></div>
+				<div class="selector_for_options">
+					<div class="select" onclick="select_option(this)">New group</div>
+				</div>
+			</div>
+			<input autocomplete="off" placeholder="To Do Task" id="button_task" type="text" name="add_task" class="input_for_task">
+			<button class="creater_tasks">Lets go!</button>
+		</form>
+	</div>
+</section>
+<div class="footer_menu">
+	<div class="container__footer_menu">
+		<p class="crt_container__footer_menu">Created by Roman Chervinskyy</p>
+		<p  id="allip" class="crt_container__footer_menu">all rights reserved 2019</p>
+	</div>
+</div>
+
+
+<div class="modal_window">
+	<div class="closer_modal" onclick="close_modal()"></div>
+	<div class="modal_original">
+		<div class="header_footer_modal">
+			<p class="p_info_modal">Editor</p>
+			<div class="close__header_modal" onclick="close_modal()"></div>
+		</div>
+		<div class="main_modal">
+			<form class="form_modal">
+				<input autocomplete="off" placeholder="Task editor" id="task_editor_modal_id" type="text" name="edit_task" class="task_editor_modal">
+				<button class="editor_tasks">Lets go!</button>
+			</form>
+
+		</div>
+		<div class="header_footer_modal">
+			<p class="p_info_modal" id="time_modal">24.07.2019 at 14:34</p>
+			<p class="p_info_modal" id="creator_modal">RCH</p>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="clear_local_storage" onclick="localfree()">
+	<i class="material-icons">delete_forever</i>
+</div>
+
+
+
+
+<video class="video" id="video_background" preload="auto" autoplay="true" loop="loop" muted="muted" src="video/cin.mp4">
+	<source src="video/cin.mp4" type='video/mp4;'>
+</video>
+	<script type="text/javascript" src="js/script.js"></script>
+</body>
+</html>
+
+
+
+
+
