@@ -1,12 +1,4 @@
-var bgdel = document.querySelector('.bg_delete');
-var no_task_m = document.querySelector('.option_no');
-var trash_all = document.querySelector('.clear_local_storage');
-var no_text = document.querySelector('.no_text');
-
-
-
-// creating a local storage
-var main = document.querySelector('.main');
+// creating a local storagegroupssave
 if (!localStorage.getItem("groupssave")) {
 	localStorage.setItem('groupssave','[]')
 }
@@ -15,1007 +7,662 @@ if (!localStorage.getItem("tasksave")) {
 }
 
 // downloading groups from a local storage
-function download(){
-	var groupsave = JSON.parse(localStorage.getItem("groupssave"));
-	main.innerHTML = "";
-	var div = " ";
-	var creators = groupsave.forEach(function(item){
-		if (item.important === 'false') {
-		return div += `
-			<div id='option' text="` +item.text+`" timecr="` +item.timeCreate+`"  important="`+item.important+`">
-				<div class='name_and_arrow'onclick="acordion(this)">
-					<div class='arrow__ul'>
-						<i class='material-icons'>keyboard_arrow_down</i>
-					</div>
-					<div class='text__ul'>` +item.text+`</div>
-				</div>
-				<div class='edit_group' id='imortant_group'  onmouseout="effectcl(this)" onmouseover="effect(this)" onclick="important_group(this)">
-					<i class='material-icons'>star</i>
-				</div>
-				<div class='edit_group'  onmouseout="effectcl(this)" onmouseover="effect(this)" onclick="deleter(this)">
-					<i class='material-icons'>delete</i>	
-				</div>
-			</div>
-			<div class="option_absolute"></div>`
-		}
-		else{
-			return div += `
-			<div id='option' text="` +item.text+`" timecr="` +item.timeCreate+`"  important="`+item.important+`" class="important_true">
-				<div class='name_and_arrow'onclick="acordion(this)">
-					<div class='arrow__ul'>
-						<i class='material-icons'>keyboard_arrow_down</i>
-					</div>
-					<div class='text__ul'>` +item.text+`</div>
-				</div>
-				<div class='edit_group important_true_edit' id='imortant_group'  onmouseout="effectcl(this)" onmouseover="effect(this)" onclick="important_group(this)">
-					<i class='material-icons'>star</i>
-				</div>
-				<div class='edit_group'  onmouseout="effectcl(this)" onmouseover="effect(this)" onclick="deleter(this)">
-					<i class='material-icons'>delete</i>	
-				</div>
-			</div>
-			<div class="option_absolute"></div>`
-		}
+const download = element =>{
+	let groupsave = JSON.parse(localStorage.getItem("groupssave"));
+	document.querySelector('.main').innerHTML = "";
+	groupsave.forEach(function(item){
+		let div = `
+		<div text='${item.text}'  id="${item.timeCreate}" class="option ${item.important}">
+		<div class='name_and_arrow'onclick="acordion(this)">
+		<div class='arrow__ul'>
+		<i class='material-icons'>keyboard_arrow_down</i>
+		</div>
+		<div class='text__ul'>${item.text}</div>
+		</div>
+		<div class='edit_group importance_star ${item.important}' id='imortant_group'  onmouseout="effectcl(this)" onmouseover="effect(this)" onclick="important_group(this)">
+		<i class='material-icons'>star</i>
+		</div>
+		<div class='edit_group'  onmouseout="effectcl(this)" onmouseover="effect(this)" onclick="deleter(this)">
+		<i class='material-icons'>delete</i>	
+		</div>
+		</div>
+		<div class="option_absolute"></div>
+		`;
+		document.querySelector('.main').innerHTML += div;
 	})
-	document.querySelector('.main').innerHTML += div;
 }
 
 
 
 
 // downloading tasks from a local storage
-function tasks_on(){
-	var tasksave = JSON.parse(localStorage.getItem("tasksave"));
-	var checking_var = [];
-
-
-
-	var checplus = tasksave.forEach(function(item){
-			var checker = item.where;
-			var obj = item;
-			var groups = document.querySelectorAll('#option');
-			var start_check = groups.forEach(function(item){
-				var groups_text = item.getAttribute('text');
-				if (groups_text == checker) {
-					checking_var.push(obj);
-
-					var eli = item.nextElementSibling;
-					var check_if_done =[];
-					if (obj.done === 'true') {
-						var yes = 'block_task_on';
-						check_if_done.push(yes);
-						var text12 = 'p__original_on';
-						check_if_done.push(text12);
-					}
-					else{
-						var yes = '';
-						check_if_done.push(yes);
-						var text12 = '';
-						check_if_done.push(text12);
-					}
-					var done_tr = check_if_done[0];
-					var done_p_on = check_if_done[1];
-
-
-
-					var today = new Date(obj.timeCreate);
-					var date = today.getDate();
-					var month1 = today.getMonth();
-					var month = month1 + 1;
-					var hour = today.getHours();
-					var minute = today.getMinutes();
-					var hour = checkTime(hour);
-					var minute = checkTime(minute);
-					month = checkTime(month);
-					var year = today.getFullYear();
-
-					var div = `
-						<div where="`+groups_text+`" text='`+obj.text+`' timecr='`+obj.timeCreate+`' class="task_options" done='`+obj.done+`'>
-						<div class="ready_task" onclick='done_option(this)'>
-							<div class="block_task `+done_tr+`"></div>
-						</div>
-							<div class="task_original">
-								<p class="p__original `+done_p_on+`">`+obj.text+`</p>
-								<p class="p__date">`+date+`.`+month+`.`+year+`</p>
-							</div>
-							<div class="edit_original" onclick="open_options_task(this)" onmouseout="efect_task(this)" onmouseover="efect_task_on(this)">
-								<p class="edit_p_original"><i class='material-icons'>settings</i></p>
-							</div>
-						</div>
-						<div class="options_task">
-							<div class="info_tools" onclick='close_options(this)' onmouseout="efect_task(this)" onmouseover="efect_task_on(this)">
-								<i class="material-icons">close</i>
-							</div>
-							<div class="tools_original">
-								<div class="tools_editor" onmouseout="efect_task(this)" onmouseover="efect_task_on(this)" onclick="open_modal(this)">
-									<i class="material-icons">edit</i>
-								</div>
-								<div class="tools_deletor" onclick='del_task(this)'onmouseout="efect_task(this)" onmouseover="efect_task_on(this)">
-									<i class="material-icons">delete</i>
-								</div>
-							</div>
-							<p class="p__date" id="p_date_tools">`+date+`.`+month+`.`+year+` at `+hour+`:`+minute+`, in `+groups_text+`</p>
-						</div>`
-					eli.innerHTML += div;
-				}
-			})
+const tasks_on = element => {
+	let Tasks = JSON.parse(localStorage.getItem("tasksave"));
+	Tasks.forEach(function(obj){
+		let today = new Date(obj.timeCreate);
+		let div = `
+		<div class='full_task'  id="${obj.id}">
+		<div  where="${obj.where}" text='${obj.text}' timecr='${obj.timeCreate}' class="task_options" done='${obj.done}'>
+		<div class="ready_task" onclick='done_option(this)'>
+		<div class="block_task ${obj.done}"></div>
+		</div>
+		<div class="task_original">
+		<p class="p__original ${obj.done}">${obj.text}</p>
+		<p class="p__date">${today.getDate()}.${checkTime(today.getMonth()+1)}.${today.getFullYear()}</p>
+		</div>
+		<div class="edit_original" onclick="open_options_task(this)" onmouseout="mouse_out_effect_vertical_lines(this)" onmouseover="mouse_on_effect_vertical_lines(this)">
+		<p class="edit_p_original"><i class='material-icons'>settings</i></p>
+		</div>
+		</div>
+		<div class="options_task">
+		<div class="info_tools" onclick='close_options(this)' onmouseout="mouse_out_effect_vertical_lines(this)" onmouseover="mouse_on_effect_vertical_lines(this)">
+		<i class="material-icons">close</i>
+		</div>
+		<div class="tools_original">
+		<div class="tools_editor" onmouseout="mouse_out_effect_vertical_lines(this)" onmouseover="mouse_on_effect_vertical_lines(this)" onclick="open_modal(this)">
+		<i class="material-icons">edit</i>
+		</div>
+		<div class="tools_deletor" onclick='del_task(this)'onmouseout="mouse_out_effect_vertical_lines(this)" onmouseover="mouse_on_effect_vertical_lines(this)">
+		<i class="material-icons">delete</i>
+		</div>
+		</div>
+		<p class="p__date" id="p_date_tools">${today.getDate()}.${checkTime(today.getMonth()+1)}.${today.getFullYear()} at ${checkTime(today.getHours())}:${checkTime(today.getMinutes())}, in ${obj.where}</p>
+		</div>
+		</div>
+		`
+		if (obj.GroupId != null){
+			document.getElementById(obj.GroupId).nextElementSibling.innerHTML += div;
+		}
+		else{
+			document.querySelector('.main').innerHTML += div;
+			document.getElementById(obj.id).setAttribute('class',"full_task task_no_group");
+		}
 	})
-	localStorage.setItem("tasksave", JSON.stringify(checking_var))
 }
 
 
-
 // cleare all local storage
-function localfree(e){
+const localfree = element => {
 	localStorage.removeItem("groupssave");
 	localStorage.setItem('groupssave','[]')
 	localStorage.removeItem("tasksave");
 	localStorage.setItem('tasksave','[]')
 	document.querySelector('.main').innerHTML = "";
-
-	no_text.innerText = "Everything is successfully DELETED";
-	setTimeout(function (){
-		no_task_m.classList.add('done__no_task_m');
-	},10)
-	setTimeout(function (){
-		no_task_m.classList.remove('done__no_task_m');
-	},1900)
-	setTimeout(function (){
-		no_text.innerText = "No tasks";
-	},2100)	
+	notification('Everything was successfully deleted');
 }
 
 
 
-
-
-
-// opening a input for creting a group
-var anikamation = document.querySelector('.form_add_gr');
-function add_group(e){
-	anikamation.classList.add('anikamation');
+// opening a input for creating a group
+const add_group = element =>{
+	document.querySelector('.form_add_gr').classList.add('anikamation');
 	setTimeout(function (){
-		anikamation.classList.add('anikamation_go');
+		document.querySelector('.form_add_gr').classList.add('anikamation_go');
 	},100)
 }
 
 
 
 
-
-
-
-
-
-
-
 // creting a group
-var groups=[];
-var options=[];
 document.querySelector(".form_add_gr").addEventListener("submit",function(el){
 	el.preventDefault();
-	var field = el.target.elements.add_group.value;
+	let field = el.target.elements.add_group.value;
 	document.querySelector(".form_add_gr input").value = "";
-	if (field === '') {
-		anikamation.classList.remove('anikamation_go');
+	if (field.trim().length == 0) {
+		document.querySelector('.form_add_gr').classList.remove('anikamation_go');
 		setTimeout(function (){
-			anikamation.classList.remove('anikamation');
+			document.querySelector('.form_add_gr').classList.remove('anikamation');
 		},100)
 	}
 	else{
-
-
-		var groups__all = document.querySelectorAll('#option');
-		var bool_check = [];
-		var start_check = groups__all.forEach(function(item){
-			var groups_text = item.getAttribute('text');
-			if (groups_text === field) {
-				var bool_false = false;
-				bool_check.push(bool_false);
-			}
-			else{
-			}
-		})
-		var bool_re = bool_check[0];
-		if (bool_re === false) {
-			no_text.innerText = "The same group is already created";
-			setTimeout(function (){
-				no_task_m.classList.add('done__no_task_m');
-			},10)
-			setTimeout(function (){
-			no_task_m.classList.remove('done__no_task_m');
-			},1900)
-			setTimeout(function (){
-				no_text.innerText = "No tasks";
-			},2100)		
+		let theSame = JSON.parse(localStorage.getItem("groupssave")).filter(obj => field == obj.text);
+		if (theSame.length) {
+			notification('The same group already exists');
 		}
 		else{
-			options.push(field);
-			groups.push(field);
-			var obj = {
+			let obj = {
 				timeCreate: Date.now(),
 				text: field,
-				important: 'false'
+				important: ''
 			};
-			var arr = JSON.parse(localStorage.getItem("groupssave"));
-			arr.push(obj);
-			localStorage.setItem("groupssave", JSON.stringify(arr))
-			var div = " ";
-			var creator = groups.forEach(function(item){
-			return div += `
-			<div id='option'  text="` +item+`"  timecr="` +obj.timeCreate+`" important="`+obj.important+`">
+			let addOne = JSON.parse(localStorage.getItem("groupssave"));
+			addOne.push(obj);
+			localStorage.setItem("groupssave", JSON.stringify(addOne));
+			let group = `
+			<div class='option'  text='${obj.text}'  id="${obj.timeCreate}">
 			<div class='name_and_arrow'onclick="acordion(this)">
 			<div class='arrow__ul'>
 			<i class='material-icons'>keyboard_arrow_down</i>
 			</div>
-			<div class='text__ul'>` +item+`</div>
+			<div class='text__ul'>${obj.text}</div>
 			</div>
-			<div class='edit_group' id='imortant_group'  onmouseout="effectcl(this)" onmouseover="effect(this)"  onclick="important_group(this)">
+			<div class='edit_group importance_star' id='imortant_group'  onmouseout="effectcl(this)" onmouseover="effect(this)" onclick="important_group(this)">
 			<i class='material-icons'>star</i>
 			</div>
 			<div class='edit_group'  onmouseout="effectcl(this)" onmouseover="effect(this)" onclick="deleter(this)">
 			<i class='material-icons'>delete</i>	
 			</div>
 			</div>
-			<div class="option_absolute"></div>`})
-			document.querySelector('.main').innerHTML += div;
-			groups.length = 0;
-			document.querySelector(".form_add_gr input").value = "";
+			<div class="option_absolute"></div>`;
+			document.querySelector('.main').innerHTML += group;
+			notification('New Group was created');
 		}
 	}
 })
 
 
 
-
-
-// closing a input for creating a group
-// function closet(e) {
-// 	anikamation.classList.remove('anikamation_go');
-// 	setTimeout(function (){
-// 		anikamation.classList.remove('anikamation');
-// 		document.querySelector(".form_add_gr input").value = "";
-// 	},100)
-// }
-
-var closet1 = document.querySelector(".form_add_gr");
-closet1.addEventListener("blur", function( closet ) {
-	anikamation.classList.remove('anikamation_go');
+//closing form for creating a group by blur
+document.querySelector(".form_add_gr").addEventListener("blur", function( closet ) {
+	document.querySelector('.form_add_gr').classList.remove('anikamation_go');
 	setTimeout(function (){
-		anikamation.classList.remove('anikamation');
+		document.querySelector('.form_add_gr').classList.remove('anikamation');
 		document.querySelector(".form_add_gr input").value = "";
 	},100)
-	console.log('hellooooo')
 }, true);
 
 
 
-
-
-
-
-// creting a clock
-function startTime() {
-	var realday = [];
-	var today = new Date();
-	var date = today.getDate();
-	var month1 = today.getMonth();
-	var year = today.getFullYear();
-	var day = today.getDay();
-	if (day == 1) {
-		var dayplus = ['Monday']
-		realday.push(dayplus);
-	}
-	else if (day == 2) {
-		var dayplus = ['Tuesday']
-		realday.push(dayplus);
-	}
-	else if (day == 3) {
-		var dayplus = ['Wednesday']
-		realday.push(dayplus);
-	}
-	else if (day == 4) {
-		var dayplus = ['Thursday']
-		realday.push(dayplus);
-	}
-	else if (day == 5) {
-		var dayplus = ['Friday']
-		realday.push(dayplus);
-	}
-	else if (day == 6) {
-		var dayplus = ['Saturday']
-		realday.push(dayplus);
-	}
-	else {
-		var dayplus = ['Sunday']
-		realday.push(dayplus);
-	}
-	var month = month1 + 1;
-	date = checkTime(date);
-	month = checkTime(month);
-	document.querySelector('.time_date_s1').innerHTML =
-	realday;
-	document.querySelector('.day_date_s1').innerHTML =
-	date + "." + month + "." + year;
-	// var test = setTimeout(startTime, 600000);
+// Click clock
+const startTime = element =>{
+	const WhichDay = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+	let today = new Date();
+	document.querySelector('.time_date_s1').innerHTML = WhichDay[today.getDay()];
+	document.querySelector('.day_date_s1').innerHTML = checkTime(today.getDate()) + "." + checkTime(today.getMonth()+1) + "." + today.getFullYear();
 }
-function checkTime(idf) {
-	if (idf < 10) {idf = "0" + idf};
-	return idf;
+const checkTime = element =>{
+	if (element < 10) {element = "0" + element};
+	return element;
 }
 
 
 
-
-
-
-
-// cool efects with hover on trash
-function effect(e){
-	those = e;
-	those.classList.add('effect_on');
+// Cool Hover Effects
+const effect = element => {
+	element.classList.add('effect_on');
 }
-function effectcl(e){
-	those = e;
-	those.classList.remove('effect_on');
+const effectcl = element => {
+	element.classList.remove('effect_on');
 }
 
 
 
-
-
-
-
-
-
-// creting a acordion for a group
-function acordion(el){
-		var elii = el.firstElementChild;
-		var cava = [33.5]
-		var eli = el.parentElement;
-		elkds = eli.nextElementSibling;
-		var fffg2 = cava * elkds.childElementCount;
-		if (elkds.childElementCount == 0) {
-			no_task_m.classList.add('done__no_task_m');
-			elii.classList.remove('done_arrow');
-			setTimeout(function (){
-				no_task_m.classList.remove('done__no_task_m');
-			},1900)
+// acordion for a group
+const acordion = element => {
+	let arrow_group = element.firstElementChild;
+	let tasks_container = element.parentElement.nextElementSibling;
+	let childs = Array.from(tasks_container.children);
+	let numbers = [];
+	childs.forEach(function(item){
+		numbers.push(item.offsetHeight);
+	});
+	if (tasks_container.childElementCount == 0) {
+		notification('No Tasks Found');
+		arrow_group.classList.remove('done_arrow');
+	}
+	else{
+		if(tasks_container.style.maxHeight) {
+			tasks_container.style.maxHeight = null;
+			arrow_group.classList.remove('done_arrow');
 		}
 		else{
-			if(elkds.style.maxHeight) {
-				elkds.style.maxHeight = null;
-				elii.classList.remove('done_arrow');
-			}
-			else{
-				elkds.style.maxHeight = ""+fffg2+"px";
-				elkds.classList.toggle('option_absolute_go');
-				elii.classList.add('done_arrow');
-			}
+			tasks_container.style.maxHeight = `${numbers.reduce(function(acc, val) { return acc + val; }, 0)}px`;
+			tasks_container.classList.toggle('option_absolute_go');
+			arrow_group.classList.add('done_arrow');
 		}
+	}
 }
-
-
-
-
-
-
-
 
 
 
 
 // opening a task creator
-var header = document.querySelector('.header');
-var myVideo = document.getElementById('video_background');
-var pause_play = document.querySelector('.pause_play');
-var add_task_menu = document.querySelector('.add_task_menu');
-var clope = document.querySelector('.button_pick_add');
-var cloped = document.querySelector('.button_pick_add__task');
-var footer = document.querySelector('.footer_menu');
-function add_task(e){
+const open_task_creator = element =>{
 	document.querySelector('body').classList.add('body_over');
 	setTimeout(function (){
-		myVideo.pause();
+		document.getElementById('video_background').pause();
 	},100)
-	header.classList.add('headerd');
-	main.classList.add('mainrd');
-	add_task_menu.classList.add('go_vid');
-	clope.classList.add('clope_g');
-	cloped.classList.add('clope_d');
-	footer.classList.add('footer_plus');
-	trash_all.classList.add('trash_hide');
-
-	var allgroups = document.querySelectorAll('.text__ul');
-	var divplus = " ";
-	var text_all_groups = [];
-
-
-
-	var divplus = " ";
-	var text_create = allgroups.forEach(function(item){
-		var bluem = item.innerText;
-		text_all_groups.push(bluem);
-	})
-
-
+	document.querySelector('.header').classList.add('headerd');
+	document.querySelector('.main').classList.add('mainrd');
+	document.querySelector('.add_task_menu').classList.add('go_vid');
+	document.querySelector('.button_pick_add').classList.add('clope_g');
+	document.querySelector('.button_pick_add__task').classList.add('clope_d');
+	document.querySelector('.footer_menu').classList.add('footer_plus');
+	document.querySelector('.clear_local_storage').classList.add('trash_hide');
+	let text_div = "";
 	document.querySelector('.selector_for_options').innerHTML = '';
-
-
-	var selector_create = text_all_groups.forEach(function(item){
-		return divplus += `<div class="select" onclick="select_option(this)">`+item+`</div>`
+	text_div += `<div class="select" onclick="select_option_selector(this)">No group</div>`
+	JSON.parse(localStorage.getItem("groupssave")).forEach(function(item){
+		return text_div += `<div class="select" onclick="select_option_selector(this)">`+item.text+`</div>`
 	})
-	document.querySelector('.selector_for_options').innerHTML += divplus;
-
-	if (selector.childElementCount == 0) {
-		console.log('no groups finded')
+	document.querySelector('.selector_for_options').innerHTML += text_div;
+	if (document.querySelector('.selector_for_options').childElementCount == 0) {
+		console.log('no groups found')
 	}
 }
-function delete_task(e) {
+
+
+
+// closing a task creator
+const close_task_creator = element => {
 	document.querySelector('body').classList.remove('body_over');
-	header.classList.remove('headerd');
-	main.classList.remove('mainrd');
-	add_task_menu.classList.remove('go_vid');
-	clope.classList.remove('clope_g');
-	cloped.classList.remove('clope_d');
-	footer.classList.remove('footer_plus');
-	trash_all.classList.remove('trash_hide');
+	document.querySelector('.header').classList.remove('headerd');
+	document.querySelector('.main').classList.remove('mainrd');
+	document.querySelector('.add_task_menu').classList.remove('go_vid');
+	document.querySelector('.button_pick_add').classList.remove('clope_g');
+	document.querySelector('.button_pick_add__task').classList.remove('clope_d');
+	document.querySelector('.footer_menu').classList.remove('footer_plus');
+	document.querySelector('.clear_local_storage').classList.remove('trash_hide');
 	setTimeout(function (){
-		myVideo.play();
+		document.getElementById('video_background').play();
 	},100)
 }
 
 
 
-
-
-
-// remove one element from local storage and site
-function deleter(e){
-	var dadt  = e.parentElement;
-	var absoluteplus = dadt.nextElementSibling;
-	if (dadt.getAttribute("important") == 'false') {
-		absoluteplus.remove();
-		dadt.remove();
-		localStorage.removeItem("groupssave");
-		localStorage.setItem('groupssave','[]');
-		var everyone = document.querySelectorAll('#option');
-		var arryt = JSON.parse(localStorage.getItem("groupssave"));
-		var unistall = everyone.forEach(function(item){
-			var text_delete_item = item.getAttribute("text");
-			var time_delete_item = item.getAttribute("timecr");
-			var important_delete_item = item.getAttribute("important");
-			var obj = {
-				timeCreate: time_delete_item,
-				text: text_delete_item,
-				important: important_delete_item
-			};
-			arryt.push(obj);
-		})
-		localStorage.setItem("groupssave", JSON.stringify(arryt))
+// Deleting all task that are connected to the deleted group
+const delete_all_related_task = argument => {
+	let filtered = JSON.parse(localStorage.getItem("tasksave")).filter(obj => +obj.GroupId !== +argument);
+	localStorage.setItem("tasksave", JSON.stringify(filtered));
+}
+// Deleting a group
+const deleter = argument => {
+	let check_for_importance = JSON.parse(localStorage.getItem("groupssave")).filter(obj => +obj.timeCreate == +argument.parentElement.getAttribute("id"));
+	if (check_for_importance[0].important.length == 0) {
+		argument.parentElement.nextElementSibling.remove();
+		argument.parentElement.remove();
+		let filtered = JSON.parse(localStorage.getItem("groupssave")).filter(obj => +obj.timeCreate !== +argument.parentElement.getAttribute("id"));
+		localStorage.setItem("groupssave", JSON.stringify(filtered));
 		document.querySelector(".input_for_task__in").value = "";
+		delete_all_related_task(argument.parentElement.getAttribute("id"));
+		notification('A group was successfully deleted');
 	} else {
-		no_text.innerText = "You Can't Delete Important Group";
-		setTimeout(function (){
-			no_task_m.classList.add('done__no_task_m');
-		},10)
-		setTimeout(function (){
-			no_task_m.classList.remove('done__no_task_m');
-		},1900)
-		setTimeout(function (){
-			no_text.innerText = "No tasks";
-		},2100)	
+		open_modal_question({text: "Delete Important Group",fun: "delete_in_all("+argument.parentElement.getAttribute("id")+")"});
 	}
 }
 
+
+
+// deleting a group despite an importance
+const delete_in_all = element_id => {
+	let result =[];
+	document.querySelectorAll('.option').forEach(function(item){
+		if (+item.getAttribute("id") === +element_id) {
+			result.push(item);
+		}
+	})
+	result[0].nextElementSibling.remove();
+	result[0].remove();
+	let filtered = JSON.parse(localStorage.getItem("groupssave")).filter(obj => +obj.timeCreate !== +element_id);
+	localStorage.setItem("groupssave", JSON.stringify(filtered));
+	delete_all_related_task(element_id);
+	document.querySelector(".input_for_task__in").value = "";
+	notification("Important Group Deleted");
+	answer_no_question();
+	notification('A group was successfully deleted');
+}
 
 
 
 // weather
-var apikey = 'dc679c4958e56033bfd7eeccd743acda'
-var request = new XMLHttpRequest()
-request.open('GET', 'https://api.openweathermap.org/data/2.5/weather?q=Lviv,ua&appid='+apikey+'', true)
+const apikey = 'dc679c4958e56033bfd7eeccd743acda';
+let request = new XMLHttpRequest();
+request.open('GET', 'https://api.openweathermap.org/data/2.5/weather?q=Lviv,ua&appid='+apikey+'', true);
 request.onload = function() {
 	// Begin accessing JSON data here
-	var data = JSON.parse(this.response)
-	var tempr = data.main.temp;
-	var temprone1 = tempr - 273.15;
-	var temprone = Math.round(temprone1)
-	document.querySelector('.temperature').innerText += temprone + "°";
-	var icon = data.weather[0].icon;
-	var icon_weather = 'http://openweathermap.org/img/w/'+icon+'.png';
+	let data = JSON.parse(this.response)
+	let temperature = data.main.temp;
+	document.querySelector('.temperature').innerText += Math.round(temperature-273.15) + "°";
+	let icon_weather = 'http://openweathermap.org/img/w/'+data.weather[0].icon+'.png';
 	document.querySelector('.img_weather').setAttribute('src',icon_weather);
 }
-request.send()
+request.send();
 
 
 
-
-
-
-
-// opening and closing a  selection
-var selector = document.querySelector('.selector_for_options');
-var input_select_a_groupall = document.querySelector('.input_for_task__in');
-function openc_select(e){
-	if (selector.childElementCount != 0) {
-		if(selector.classList.contains('selector_for_options_on')) {
-			selector.classList.remove('selector_for_options_on');
+// opening and closing selection
+const open_selector_groups_input = element => {
+	console.log("dfdfdfdf")
+	let childs = Array.from(document.querySelector('.selector_for_options').children);
+	let numbers = [];
+	childs.forEach(function(item){numbers.push(item.offsetHeight);});
+	let height_of_childs = numbers.reduce(function(acc, val) { return acc + val; }, 0);
+	if (document.querySelector('.selector_for_options').childElementCount != 0) {
+		if(!document.querySelector('.selector_for_options').style.maxHeight) {
+			if (height_of_childs > 105) {
+				document.querySelector('.selector_for_options').style.maxHeight = '105px';
+			} else {
+				document.querySelector('.selector_for_options').style.maxHeight = `${numbers.reduce(function(acc, val) { return acc + val; }, 0)}px`;
+			}
+			document.querySelector('.selector_for_options').classList.add('selector_for_options_on');
+			document.querySelector('.arrow_down_t').classList.add('opened');
 		}
 		else{
-			selector.classList.add('selector_for_options_on');
+			document.querySelector('.selector_for_options').classList.remove('selector_for_options_on');
+			document.querySelector('.selector_for_options').style.maxHeight = null;
+			document.querySelector('.arrow_down_t').classList.remove('opened');
 		}
 	}
 	else{
-		no_text.innerText = "No Groups Finded";
-		setTimeout(function (){
-			no_task_m.classList.add('done__no_task_m');
-		},10)
-		setTimeout(function (){
-			no_task_m.classList.remove('done__no_task_m');
-		},1900)
-		setTimeout(function (){
-			no_text.innerText = "No tasks";
-		},2100)	
+		notification('No Groups Found');
 	}
 }
 
 
-
-
-
-
-
-// select a option
-var input_select_a_group = document.querySelector('.input_for_task__in');
-function select_option(el){
-	those = el;
-	input_select_a_group.value = those.innerText;
+// select an option
+const select_option_selector = element => {
+	document.querySelector('.input_for_task__in').value = element.innerText;
 }
-
-
-
-
 
 
 
 // creating a task
 document.querySelector(".form__add_task_menu").addEventListener("submit",function(eli){
 	eli.preventDefault();
-	var field = eli.target.elements.add_task.value;
-	var group_ch = eli.target.elements.add_task__in.value;
-	if (field === '' || group_ch === '') {
-		no_text.innerText = "Please enter task or group";
-		setTimeout(function (){
-			no_task_m.classList.add('done__no_task_m');
-		},10)
-		setTimeout(function (){
-			no_task_m.classList.remove('done__no_task_m');
-		},1900)
-		setTimeout(function (){
-			no_text.innerText = "No tasks";
-		},2100)
+	if (eli.target.elements.add_task.value.trim().length == 0 || eli.target.elements.add_task__in.value.trim().length == 0) {
+		notification('Please enter task or group');
 	}
 	else{
-		var timing = new Date();
-		var obj = {
-			timeCreate: timing,
-			text: field,
-			where: group_ch,
-			done: "false"
+		unique_id_group = null
+		where_ = null
+		if (eli.target.elements.add_task__in.value != "No group"){
+			let filtered = JSON.parse(localStorage.getItem("groupssave")).filter(obj => obj.text == eli.target.elements.add_task__in.value);
+			unique_id_group = filtered[0].timeCreate
+			where_ = eli.target.elements.add_task__in.value
+		}
+		let obj = {
+			timeCreate: new Date(),
+			id: Date.now(),
+			GroupId: unique_id_group,
+			text: eli.target.elements.add_task.value,
+			where: eli.target.elements.add_task__in.value,
+			done: ""
 		};
-		var arr = JSON.parse(localStorage.getItem("tasksave"));
+		let arr = JSON.parse(localStorage.getItem("tasksave"));
 		arr.push(obj);
-		localStorage.setItem("tasksave", JSON.stringify(arr))
-		var creatorplus = document.querySelectorAll("#option").forEach(function(item){
-			var choppy = item.getAttribute("text");
-			if (choppy == group_ch) {
-				var eli = item.nextElementSibling;
-
-				var today = new Date();
-				var date = today.getDate();
-				var month1 = today.getMonth();
-				var hour = today.getHours();
-				var minute = today.getMinutes();
-				var month = month1 + 1;
-				var hour = checkTime(hour);
-				var minute = checkTime(minute);
-				month = checkTime(month);
-				var year = today.getFullYear();
-				var div = `
-				<div where="`+group_ch+`" text='`+field+`' timecr='`+obj.timeCreate+`' class="task_options" done="`+obj.done+`">
-					<div class="ready_task" onclick='done_option(this)'>
-						<div class="block_task"></div>
-					</div>
-					<div class="task_original">
-						<p class="p__original">`+field+`</p>
-						<p class="p__date">`+date+`.`+month+`.`+year+`</p>
-					</div>
-					<div class="edit_original" onclick="open_options_task(this)" onmouseout="efect_task(this)" onmouseover="efect_task_on(this)" >
-						<p class="edit_p_original"><i class='material-icons'>settings</i></p>
-					</div>
-				</div>
-				<div class="options_task">
-					<div class="info_tools" onclick='close_options(this)'  onmouseout="efect_task(this)" onmouseover="efect_task_on(this)">
-						<i class="material-icons">close</i>
-					</div>
-					<div class="tools_original">
-						<div class="tools_editor" onmouseout="efect_task(this)" onmouseover="efect_task_on(this)" onclick="open_modal(this)">
-							<i class="material-icons">edit</i>
-						</div>
-						<div class="tools_deletor" onclick='del_task(this)'onmouseout="efect_task(this)" onmouseover="efect_task_on(this)">
-							<i class="material-icons">delete</i>
-						</div>
-					</div>
-					<p class="p__date" id="p_date_tools">`+date+`.`+month+`.`+year+` at `+hour+`:`+minute+`, in `+group_ch+`</p>
-				</div>`
-				eli.innerHTML += div;
-			}
-		})
+		localStorage.setItem("tasksave", JSON.stringify(arr));
 		document.querySelector(".input_for_task").value = "";
+		let div = `
+		<div class='full_task'  id="${obj.id}">
+		<div  where="${obj.where}" text='${obj.text}' timecr='${obj.timeCreate}' class="task_options" done='${obj.done}'>
+		<div class="ready_task" onclick='done_option(this)'>
+		<div class="block_task ${obj.done}"></div>
+		</div>
+		<div class="task_original">
+		<p class="p__original ${obj.done}">${obj.text}</p>
+		<p class="p__date">${obj.timeCreate.getDate()}.${checkTime(obj.timeCreate.getMonth()+1)}.${obj.timeCreate.getFullYear()}</p>
+		</div>
+		<div class="edit_original" onclick="open_options_task(this)" onmouseout="mouse_out_effect_vertical_lines(this)" onmouseover="mouse_on_effect_vertical_lines(this)">
+		<p class="edit_p_original"><i class='material-icons'>settings</i></p>
+		</div>
+		</div>
+		<div class="options_task">
+		<div class="info_tools" onclick='close_options(this)' onmouseout="mouse_out_effect_vertical_lines(this)" onmouseover="mouse_on_effect_vertical_lines(this)">
+		<i class="material-icons">close</i>
+		</div>
+		<div class="tools_original">
+		<div class="tools_editor" onmouseout="mouse_out_effect_vertical_lines(this)" onmouseover="mouse_on_effect_vertical_lines(this)" onclick="open_modal(this)">
+		<i class="material-icons">edit</i>
+		</div>
+		<div class="tools_deletor" onclick='del_task(this)'onmouseout="mouse_out_effect_vertical_lines(this)" onmouseover="mouse_on_effect_vertical_lines(this)">
+		<i class="material-icons">delete</i>
+		</div>
+		</div>
+		<p class="p__date" id="p_date_tools">${obj.timeCreate.getDate()}.${checkTime(obj.timeCreate.getMonth()+1)}.${obj.timeCreate.getFullYear()} at ${checkTime(obj.timeCreate.getHours())}:${checkTime(obj.timeCreate.getMinutes())}, in ${obj.where}</p>
+		</div>
+		</div>
+		`
+		if (obj.GroupId != null){
+			document.getElementById(obj.GroupId).nextElementSibling.innerHTML += div;
+		}
+		else{
+			document.querySelector('.main').innerHTML += div;
+			document.getElementById(obj.id).setAttribute('class',"full_task task_no_group");
+		}
+		notification('New Task Was Created');
 	}
 })
 
 
 
-
-
-
 // efect on icon 'settings'
-function efect_task_on(e){
-	those = e;
-	those.classList.add('effect_on__task');
+const mouse_on_effect_vertical_lines = element =>{
+	element.classList.add('effect_on__task');
 }
-function efect_task(e){
-	those = e;
-	those.classList.remove('effect_on__task');
+const mouse_out_effect_vertical_lines = element =>{
+	element.classList.remove('effect_on__task');
 }
-
-
 
 
 
 // opening and closing tools for task
-function open_options_task(el){
-	var dad  = el.parentElement;
-	var sibling = dad.nextElementSibling;
-	dad.classList.add('margin_task');
-	sibling.classList.add('margin_task_task_options');
+const open_options_task = element =>{
+	element.parentElement.classList.add('margin_task');
+	element.parentElement.nextElementSibling.classList.add('margin_task_task_options');
 }
-function close_options(el){
-	var dadt  = el.parentElement;
-	var sibling = dadt.previousElementSibling;
-	dadt.classList.remove('margin_task_task_options');
-	sibling.classList.remove('margin_task');
+const close_options = element =>{
+	element.parentElement.classList.remove('margin_task_task_options');
+	element.parentElement.previousElementSibling.classList.remove('margin_task');
 }
 
 
 // deleting a task
-function del_task(el){
-	var dadt = el.parentElement;
-	var dad = dadt.parentElement;
-	var sibling = dad.previousElementSibling;
-	sibling.classList.add('width_0');
+const del_task = element =>{
+	let dad = element.parentElement.parentElement.parentElement;
 	dad.classList.add('width_0');
 	setTimeout(function (){
-		sibling.remove();
 		dad.remove();
-		localStorage.removeItem("tasksave");
-		localStorage.setItem('tasksave','[]');
-		var tasksall = document.querySelectorAll('.task_options');
-		var arryt = JSON.parse(localStorage.getItem("tasksave"));
-		var unistall = tasksall.forEach(function(item){
-			var text_del_item = item.getAttribute("text");
-			var time_del_item = item.getAttribute("timecr");
-			var where_del_item = item.getAttribute("where");
-			var done_del_item = item.getAttribute("done");
-			var obj = {
-				timeCreate: time_del_item,
-				text: text_del_item,
-				where: where_del_item,
-				done: done_del_item
-			};
-			arryt.push(obj);
-		})
-		localStorage.setItem("tasksave", JSON.stringify(arryt))
+		let filtered = JSON.parse(localStorage.getItem("tasksave")).filter(obj => +obj.id !== +dad.getAttribute("id"));
+		localStorage.setItem("tasksave", JSON.stringify(filtered));
+	},205)
+}
+// deleting a task by id from argument
+const del_task_id = argument =>{
+	document.getElementById(argument).classList.add('width_0');
+	setTimeout(function (){
+		document.getElementById(argument).remove();
+		let filtered = JSON.parse(localStorage.getItem("tasksave")).filter(obj => +obj.id !== +argument);
+		localStorage.setItem("tasksave", JSON.stringify(filtered));
 	},205)
 }
 
 
 
-
-
-
-// make group important
-function important_group(el) {
-	var option = el.parentElement;
-	var rtoption = el.parentElement.getAttribute("important");
-	if (rtoption === 'true') {
-		option.setAttribute('important',false);
-		option.classList.remove('important_true');
-		el.classList.remove('important_true_edit');
-		localStorage.removeItem("groupssave");
-		localStorage.setItem('groupssave','[]');
-		var everyone = document.querySelectorAll('#option');
-		var arryt = JSON.parse(localStorage.getItem("groupssave"));
-		var unistall = everyone.forEach(function(item){
-			var text_delete_item = item.getAttribute("text");
-			var time_delete_item = item.getAttribute("timecr");
-			var important_delete_item = item.getAttribute("important");
-			var obj = {
-				timeCreate: time_delete_item,
-				text: text_delete_item,
-				important: important_delete_item
-			};
-			arryt.push(obj);
-		})
-		localStorage.setItem("groupssave", JSON.stringify(arryt))
-	}
-	else{
-		option.setAttribute('important',true);
-		option.classList.add('important_true');
-		el.classList.add('important_true_edit');
-		localStorage.removeItem("groupssave");
-		localStorage.setItem('groupssave','[]');
-		var everyone = document.querySelectorAll('#option');
-		var arryt = JSON.parse(localStorage.getItem("groupssave"));
-		var unistall = everyone.forEach(function(item){
-			var text_delete_item = item.getAttribute("text");
-			var time_delete_item = item.getAttribute("timecr");
-			var important_delete_item = item.getAttribute("important");
-			var obj = {
-				timeCreate: time_delete_item,
-				text: text_delete_item,
-				important: important_delete_item
-			};
-			arryt.push(obj);
-		})
-		localStorage.setItem("groupssave", JSON.stringify(arryt))
-	}
+//making important a group
+const important_group = argument =>{
+	let main_contact = argument.parentElement;
+	let main_contact_id = main_contact.getAttribute("id");
+	let groups = JSON.parse(localStorage.getItem("groupssave"));
+	let arr = [];
+	groups.forEach(function(item){
+		arr.push(item.timeCreate);
+	})
+	let current = arr.indexOf(+main_contact_id);
+	if (groups[current].important.trim().length == 0) {
+		groups[current].important = 'true';
+		main_contact.classList.add('true');
+		argument.classList.add('true');
+	} else {
+		groups[current].important = '';
+		main_contact.classList.remove('true');
+		argument.classList.remove('true');
+		console.log("BAD");
+	};
+	localStorage.setItem("groupssave", JSON.stringify(groups))
 }
 
 
 
-// make task ready
-function done_option(el) {
-	var task = el.parentElement;
-	var child = el.firstElementChild;
-	var rtask = el.parentElement.getAttribute("done");
-	var sibling = el.nextElementSibling;
-	var p_origin = sibling.firstElementChild;
-	if (rtask === 'true') {
-		task.setAttribute('done',false);
-		child.classList.remove('block_task_on');
-		p_origin.classList.remove('p__original_on');
-		localStorage.removeItem("tasksave");
-		localStorage.setItem('tasksave','[]');
-		var tasksall = document.querySelectorAll('.task_options');
-		var arryt = JSON.parse(localStorage.getItem("tasksave"));
-		var unistall = tasksall.forEach(function(item){
-			var text_del_item = item.getAttribute("text");
-			var time_del_item = item.getAttribute("timecr");
-			var where_del_item = item.getAttribute("where");
-			var done_del_item = item.getAttribute("done");
-			var obj = {
-				timeCreate: time_del_item,
-				text: text_del_item,
-				where: where_del_item,
-				done: done_del_item
-			};
-			arryt.push(obj);
-		})
-		localStorage.setItem("tasksave", JSON.stringify(arryt))
+
+// task done
+const done_option = argument =>{
+	let main_contact = argument.parentElement.parentElement;
+	let main_contact_id = main_contact.getAttribute("id");
+	let tasksave = JSON.parse(localStorage.getItem("tasksave"));
+	let arr = [];
+	tasksave.forEach(function(item){arr.push(item.id);})
+	let current = arr.indexOf(+main_contact_id);
+	if (tasksave[current].done.trim().length == 0) {
+		tasksave[current].done = 'true';
+		main_contact.firstElementChild.firstElementChild.firstElementChild.classList.add('true');
+		main_contact.firstElementChild.firstElementChild.nextElementSibling.firstElementChild.classList.add('true');
+	} else {
+		tasksave[current].done = '';
+		argument.classList.remove('true');
+		main_contact.firstElementChild.firstElementChild.firstElementChild.classList.remove('true');
+		main_contact.firstElementChild.firstElementChild.nextElementSibling.firstElementChild.classList.remove('true');
 	}
-	else{
-		task.setAttribute('done',true);
-		child.classList.add('block_task_on');
-		p_origin.classList.add('p__original_on');
-		localStorage.removeItem("tasksave");
-		localStorage.setItem('tasksave','[]');
-		var tasksall = document.querySelectorAll('.task_options');
-		var arryt = JSON.parse(localStorage.getItem("tasksave"));
-		var unistall = tasksall.forEach(function(item){
-			var text_del_item = item.getAttribute("text");
-			var time_del_item = item.getAttribute("timecr");
-			var where_del_item = item.getAttribute("where");
-			var done_del_item = item.getAttribute("done");
-			var obj = {
-				timeCreate: time_del_item,
-				text: text_del_item,
-				where: where_del_item,
-				done: done_del_item
-			};
-			arryt.push(obj);
-		})
-		localStorage.setItem("tasksave", JSON.stringify(arryt))
-	}
+	localStorage.setItem("tasksave", JSON.stringify(tasksave));
 }
 
 
 
 // closing and opening modal window
-var this_target = [];
-var modal_window = document.querySelector('.modal_window');
-var modal_original = document.querySelector('.modal_original');
-var time_modal = document.querySelector('#time_modal');
-var input_modal = document.querySelector('.task_editor_modal');
-function open_modal(el) {
-	var dadt = el.parentElement;
-	var dad = dadt.parentElement;
-	var sibling = dad.previousElementSibling;
-
-	var task_text = sibling.getAttribute("text");
-	var task_time = sibling.getAttribute("timecr");
-	var task_where = sibling.getAttribute("where");
-	var task_done = sibling.getAttribute("done");
-
-
-	console.log(this_target);
-	this_target.length = 0;
-	console.log(sibling);
-	console.log(task_text);
-
-	this_target.push(sibling);
-
-	modal_original.setAttribute('text',task_text);
-	modal_original.setAttribute('timecr',task_time);
-	modal_original.setAttribute('where',task_where);
-	modal_original.setAttribute('done',task_done);
-
-	var today = new Date(task_time);
-	var date = today.getDate();
-	var month1 = today.getMonth();
-	var hour = today.getHours();
-	var minute = today.getMinutes();
-	var month = month1 + 1;
-	var hour = checkTime(hour);
-	var minute = checkTime(minute);
-	month = checkTime(month);
-	var year = today.getFullYear();
-
-	time_modal.innerText = ``+date+`.`+month+`.`+year+` at `+hour+`:`+minute+``;
-	input_modal.value = ``+task_text+``;
-		modal_window.classList.add("modal_window_done");
-}
-function close_modal(el) {
-	modal_window.classList.remove("modal_window_done");
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-// editing a task
-document.querySelector(".form_modal").addEventListener("submit",function(eli){
-	eli.preventDefault();
-	var field = eli.target.elements.edit_task.value;
-	if (field === '') {
-		no_text.innerText = "Please enter edited task";
-		setTimeout(function (){
-			no_task_m.classList.add('done__no_task_m');
-		},10)
-		setTimeout(function (){
-			no_task_m.classList.remove('done__no_task_m');
-		},1900)
-		setTimeout(function (){
-			no_text.innerText = "No tasks";
-		},2100)
+const open_modal = argument =>{
+	let OurTask = JSON.parse(localStorage.getItem("tasksave")).filter(obj => +obj.id == +argument.parentElement.parentElement.parentElement.getAttribute("id"));
+	if (!OurTask.length) {
+		notification("We can't find this task in Local Storage");
 	}
 	else{
-		var dad = document.querySelector(".modal_original");
-		var date_for_editor = dad.getAttribute("timecr");
-		var where_for_editor = dad.getAttribute('where');
-		var done_for_editor = dad.getAttribute('done');
-		var timing = new Date(date_for_editor);
-		var obj = {
-			timeCreate: timing,
-			text: field,
-			where: where_for_editor,
-			done: done_for_editor
-		};
-		var arr = JSON.parse(localStorage.getItem("tasksave"));
-		arr.push(obj);
-		localStorage.setItem("tasksave", JSON.stringify(arr))
-		var this_target1 = this_target[0];
-		console.log(this_target);
-		console.log(this_target1);
-		var next_target = this_target1.nextElementSibling;
-		this_target1.classList.add('width_0');
-		next_target.classList.add('width_0');
+		let today = new Date(OurTask[0].timeCreate);
+		document.querySelector('#time_modal').innerText = `Created in `+today.getDate()+`.`+checkTime(today.getMonth()+1)+`.`+today.getFullYear(today.getHours())+` at `+checkTime(today.getHours())+`:`+checkTime(today.getMinutes())+``;
+		document.querySelector('.task_editor_modal').value = OurTask[0].text;
+		document.querySelector("#task_editor_modal_id__taskID").value = OurTask[0].id;
+		document.querySelector('.editor_modal_window').classList.add("modal_window_done");
+	}
+}
+const close_modal = argument => {
+	document.querySelector('.editor_modal_window').classList.remove("modal_window_done");
+}
+
+
+
+// Are u sure about it (Question modal)question_answer_yes
+const open_modal_question = argument =>{
+	document.querySelector('.task_question_modal').innerText = `Are u sure about '${argument.text}'?`;
+	document.querySelector('.question_answer_yes').setAttribute('onclick',argument.fun);
+	document.querySelector('.modal_window_question').classList.add("modal_window_done");
+}
+const answer_no_question = argument =>{
+	document.querySelector('.task_question_modal').innerText = `If u can see it then smth went wrong`;
+	document.querySelector('.question_answer_yes').setAttribute('onclick','');
+	document.querySelector('.modal_window_question').classList.remove("modal_window_done");
+}
+
+
+//editing a task
+document.querySelector(".form_modal").addEventListener("submit",function(argument){
+	argument.preventDefault();
+	let tasks = JSON.parse(localStorage.getItem("tasksave"));
+	let arr = [];
+	tasks.forEach(function(item){
+		arr.push(item.id);
+	});
+	if (!argument.target.elements.edit_task.value.trim().length == 0) {
+		document.getElementById(argument.target.elements.id.value).classList.add('width_0');
+		close_modal();
+		close_options(document.getElementById(argument.target.elements.id.value).firstElementChild.nextElementSibling.firstElementChild);
 		setTimeout(function (){
-		this_target1.remove();
-		next_target.remove();
-		var creatorplus = document.querySelectorAll("#option").forEach(function(item){
-			var choppy = item.getAttribute("text");
-			if (choppy == where_for_editor) {
-				var elic = item.nextElementSibling;
-				var today = new Date(date_for_editor);
-				var date = today.getDate();
-				var month1 = today.getMonth();
-				var hour = today.getHours();
-				var minute = today.getMinutes();
-				var month = month1 + 1;
-				var hour = checkTime(hour);
-				var minute = checkTime(minute);
-				month = checkTime(month);
-				var year = today.getFullYear();
-				var check_if_done =[];
-				if (obj.done === 'true') {
-					var yes = 'block_task_on';
-					check_if_done.push(yes);
-					var text12 = 'p__original_on';
-					check_if_done.push(text12);
-				}
-				else{
-					var yes = '';
-					check_if_done.push(yes);
-					var text12 = '';
-					check_if_done.push(text12);
-				}
-				var done_tr = check_if_done[0];
-				var done_p_on = check_if_done[1];
-				var div = `
-				<div where="`+where_for_editor+`" text='`+field+`' timecr='`+obj.timeCreate+`' class="task_options animaton_onedited" done="`+obj.done+`">
-					<div class="ready_task" onclick='done_option(this)'>
-						<div class="block_task `+done_tr+`"></div>
-					</div>
-					<div class="task_original">
-						<p class="p__original `+done_p_on+`">`+field+`</p>
-						<p class="p__date">`+date+`.`+month+`.`+year+`</p>
-					</div>
-					<div class="edit_original" onclick="open_options_task(this)" onmouseout="efect_task(this)" onmouseover="efect_task_on(this)" >
-						<p class="edit_p_original"><i class='material-icons'>settings</i></p>
-					</div>
-				</div>
-				<div class="options_task">
-					<div class="info_tools" onclick='close_options(this)'  onmouseout="efect_task(this)" onmouseover="efect_task_on(this)">
-						<i class="material-icons">close</i>
-					</div>
-					<div class="tools_original">
-						<div class="tools_editor" onmouseout="efect_task(this)" onmouseover="efect_task_on(this)" onclick="open_modal(this)">
-							<i class="material-icons">edit</i>
-						</div>
-						<div class="tools_deletor" onclick='del_task(this)'onmouseout="efect_task(this)" onmouseover="efect_task_on(this)">
-							<i class="material-icons">delete</i>
-						</div>
-					</div>
-					<p class="p__date" id="p_date_tools">`+date+`.`+month+`.`+year+` at `+hour+`:`+minute+`, in `+where_for_editor+`</p>
-				</div>`
-				elic.innerHTML += div;
-			}
-		})
-		localStorage.removeItem("tasksave");
-		localStorage.setItem('tasksave','[]');
-		var tasksall = document.querySelectorAll('.task_options');
-		var arryt = JSON.parse(localStorage.getItem("tasksave"));
-		var unistall = tasksall.forEach(function(item){
-			var text_del_item = item.getAttribute("text");
-			var time_del_item = item.getAttribute("timecr");
-			var where_del_item = item.getAttribute("where");
-			var done_del_item = item.getAttribute("done");
-			var obj = {
-				timeCreate: time_del_item,
-				text: text_del_item,
-				where: where_del_item,
-				done: done_del_item
-			};
-			arryt.push(obj);
-		})
-		localStorage.setItem("tasksave", JSON.stringify(arryt))
-		modal_window.classList.remove("modal_window_done");
-		},205)
-		setTimeout(function (){
-			var deletetorplus = document.querySelectorAll(".task_options").forEach(function(item){
-				item.classList.remove('animaton_onedited');
-			})
-		},406)
+			document.getElementById(argument.target.elements.id.value).firstElementChild.firstElementChild.nextElementSibling.firstElementChild.innerText = argument.target.elements.edit_task.value;
+			document.getElementById(argument.target.elements.id.value).classList.remove('width_0');
+		},300)
+		let current = arr.indexOf(+argument.target.elements.id.value);
+		tasks[current].text = argument.target.elements.edit_task.value;
+		localStorage.setItem("tasksave", JSON.stringify(tasks));
+		notification('Task was successfully edited');
+	}
+	else {
+		close_modal();
+		open_modal_question({text: "Delete this task",fun: "del_task_id("+argument.target.elements.edit_task.value+")"});
 	}
 })
+
+//  minor animations on start (onload)
+const minor_animations_start = argument =>{
+	setTimeout(function (){
+		document.querySelector('.header').classList.remove('hidden');
+	},100)
+	setTimeout(function (){
+		document.querySelector('.main').classList.remove('minor_animation');
+	},200)
+}
+minor_animations_start();
+
+//notifications
+const notification = argument =>{
+	document.querySelector('.p_notification_main').innerText = argument;
+	setTimeout(function (){
+		document.querySelector('.notification_main').classList.add('notification_on');
+	},10);
+	setTimeout(function (){
+		document.querySelector('.notification_main').classList.remove('notification_on');
+	},2300);
+}
+
+
+// 3d rotation because of mouse position
+const modal_original = document.querySelector('#modal_original_1');
+const modal_original2 = document.querySelector('#modal_original_2');
+const editor_modal_window = document.querySelector('.editor_modal_window');
+
+modal_original.addEventListener('mousemove', handleMove);
+modal_original2.addEventListener('mousemove', handleMove);
+
+// Mouse rotate function
+function handleMove(argument){
+	const height = 230;
+	const width = 440;
+
+	const xVal = argument.layerX;
+	const yVal= argument.layerY;
+  
+	// 20 is the answer why the rotion is so slow or fast
+	const yRotation = 20 * ((xVal - width / 2) / width);
+	const xRotation = -20 * ((yVal - height / 2) / height);
+
+	const string = 'perspective(520px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)';
+	console.log(yVal)
+	if(editor_modal_window.classList.contains('modal_window_done')) {
+		modal_original.style.transform = string;
+	}
+	else{
+		modal_original2.style.transform = string;
+	}
+}
+
+
+// We take out our mouse from element
+modal_original.addEventListener('mouseout', function() {
+	modal_original.style.transform = 'perspective(520px) scale(1) rotateX(0) rotateY(0)';
+});
+modal_original2.addEventListener('mouseout', function() {
+	modal_original2.style.transform = 'perspective(520px) scale(1) rotateX(0) rotateY(0)';
+});
+
+
+
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  static displayName = "Точка";
+  static distance(a, b) {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+
+    return Math.hypot(dx, dy);
+  }
+}
+
+const p1 = new Point(5, 5);
+const p2 = new Point(5, 10);
+p1.displayName; //undefined
+p1.distance;    //undefined
+p2.displayName; //undefined
+p2.distance;    //undefined
+
+
+console.log(Point.displayName);      // "Точка"
+console.log(Point.distance(p1, p2)); // 7.0710678118654755

@@ -12,7 +12,7 @@
 
 
 
-<header class="header" >
+<header class="header hidden" >
 	<section class="header__s1">
 		<div class="div__todo"><p class="p__to_do_list">To Do List  </p><p class="p__text_to_do">  , your own site</p></div>
 
@@ -32,7 +32,7 @@
 	<section class="header__s2">
 		<div class="buttons__s2">
 			<div class="button_adder">
-				<button class="button_pick_add" onclick='add_task(this)'>
+				<button class="button_pick_add" onclick='open_task_creator(this)'>
 				</button>
 			</div>
 			<div class="p_con_s2"><p class="p__p_con_s2">Lviv</p></div>
@@ -45,32 +45,41 @@
 		</div>
 	</section>
 </header> 
-<main class="main">
+<main class="main minor_animation">
 </main>
 
 
-<div class="option_no">
+<!-- <div class="option_no">
 	<p class="no_text">No Tasks</p>
+</div> -->
+<div class="notification_main"> 
+	<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="svg_notification_main">
+			<path d="M27 13h-1V9c0-1.65-1.35-3-3-3H9C7.35 6 6 7.35 6 9v14c0 1.65 1.35 3 3 3h14c1.65 0 3-1.35 3-3v-4h1a1 1 0 001-1v-4a1 1 0 00-1-1zm-6.15 6.53c-.18.29-.5.47-.85.47h-2c0 1.1-.9 2-2 2s-2-.9-2-2h-2c-.35 0-.67-.18-.85-.47-.18-.3-.2-.67-.04-.98l.89-1.79V14c0-2.21 1.79-4 4-4s4 1.79 4 4v2.76l.89 1.79c.16.31.14.68-.04.98z"fill="#364F6B"/>
+			<path d="M19.38 4h2.04l-.44-2.2c-.09-.46-.5-.8-.98-.8h-8c-.48 0-.89.34-.98.8L10.58 4h8.8zM12.62 28h-2.04l.44 2.2c.09.46.5.8.98.8h8c.48 0 .89-.34.98-.8l.44-2.2h-8.8z" fill="#3FC1C9"/>
+			<path d="M18 17v-3c0-1.1-.9-2-2-2s-2 .9-2 2v3c0 .16-.04.31-.11.45l-.27.55h4.76l-.27-.55A.997.997 0 0118 17z"fill="#364F6B"/>
+	</svg>
+	<p class="p_notification_main">A group was successfully deleted</p>
 </div>
+
 
 <section class="add_task_menu">
 	<div class="rch_info">
-		<p class="made__rch_info">Task Manager By Fen1um</p>
+		<p class="made__rch_info">Task Manager By <a class="a_made__rch_info" href="https://github.com/regicide21"> Fen1um</a></p>
 	</div>
 	<div class="rch_deleter_add_task_menu">
-		<button class="button_pick_add__task" onclick='delete_task(this)'></button>
-		<div class="star_cool" onclick='delete_task(this)'></div>
+		<button class="button_pick_add__task" onclick='close_task_creator(this)'></button>
+		<div class="star_cool" onclick='close_task_creator(this)'></div>
 	</div>
 	<div class="main__add_task_menu">
 		<div class="image__add_task_menu">
-			<p class="p__add_task_menu">TDL</p>
+			<p class="p__add_task_menu">Task</p>
 		</div>
 		<form class="form__add_task_menu">
-			<div class="input_div"  onclick="openc_select(this)">
+			<div class="input_div"  onclick="open_selector_groups_input(this)">
 				<input autocomplete="off" placeholder="Choose group" id="button_task_plus" type="text" name="add_task__in" class="input_for_task__in" disabled="true">
 				<div class="arrow_down_t"></div>
 				<div class="selector_for_options">
-					<div class="select" onclick="select_option(this)">New group</div>
+					<!-- <div class="select" onclick="select_option(this)">New group</div> -->
 				</div>
 			</div>
 			<input autocomplete="off" placeholder="To Do Task" id="button_task" type="text" name="add_task" class="input_for_task">
@@ -86,30 +95,53 @@
 </div>
 
 
-<div class="modal_window">
+<div class="modal_window editor_modal_window">
 	<div class="closer_modal" onclick="close_modal()"></div>
-	<div class="modal_original">
+	<div id='modal_original_1' class="modal_original editor_modal_original">
 		<div class="header_footer_modal">
-			<p class="p_info_modal">Editor</p>
+			<p class="p_info_modal">Edit ur task</p>
 			<div class="close__header_modal" onclick="close_modal()"></div>
 		</div>
 		<div class="main_modal">
 			<form class="form_modal">
 				<input autocomplete="off" placeholder="Task editor" id="task_editor_modal_id" type="text" name="edit_task" class="task_editor_modal">
+				<input type="text" name="id" autocomplete="off" hidden id="task_editor_modal_id__taskID">
 				<button class="editor_tasks">Lets go!</button>
 			</form>
 
 		</div>
 		<div class="header_footer_modal">
-			<p class="p_info_modal" id="time_modal">24.07.2019 at 14:34</p>
-			<p class="p_info_modal" id="creator_modal">RCH</p>
+			<p class="p_info_modal" id="time_modal">Something went wrong</p>
+			<a href="https://github.com/regicide21" class="p_info_modal ahref" id="creator_modal">By Fen1um</a>
 		</div>
 	</div>
 </div>
 
 
+<div class="modal_window modal_window_question">
+	<div class="closer_modal" onclick="answer_no_question()"></div>
+	<div  id='modal_original_2'   class="modal_original">
+		<div class="header_footer_modal">
+			<p class="p_info_modal">Attention</p>
+			<div class="close__header_modal" onclick="answer_no_question()"></div>
+		</div>
+		<div class="main_modal">
+			<form class="form_modal">
+				<p class="task_question_modal">Are u sure about 'Delete Important Group'?</p>
+				<div class="container_buttons_question_tasks">
+					<div onclick="" class="editor_tasks question question_answer_yes">I'm sure</div>
+					<div onclick="answer_no_question()" class="editor_tasks question">No i'm not</div>
+				</div>
+			</form>
 
-<div class="clear_local_storage" onclick="localfree()">
+		</div>
+		<div class="header_footer_modal question_modal">
+			<a href="https://github.com/regicide21" class="p_info_modal ahref" id="creator_modal">Fen1um</a>
+		</div>
+	</div>
+</div>
+
+<div class="clear_local_storage" onclick='open_modal_question({text: "Delete Everything",fun: "localfree()"})'>
 	<i class="material-icons">delete_forever</i>
 </div>
 
@@ -122,8 +154,3 @@
 	<script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>
-
-
-
-
-
